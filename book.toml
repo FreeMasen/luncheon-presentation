@@ -1,0 +1,16 @@
+[book]
+authors = ["Robert Masen"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Luncheon"
+
+[output.html]
+git-repository-url = "https://github.com/cosock/luncheon"
+
+
+[preprocessor.presentation-preprocessor]
+
+
+[build]
+create-missing = true
