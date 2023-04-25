@@ -161,7 +161,7 @@
 }
 </style>
 <h1 id="luncheon"><a class="header" href="#luncheon">Luncheon</a></h1>
-<p>HTTP Types for Lua</p>
+<p>HTTP Types in pure Lua</p>
 <script>var PresentationMode;!function(t){t[t.Slides=0]="Slides",t[t.Web=1]="Web"}(PresentationMode=PresentationMode||{});var PresentationModeHider=function(){function t(){var e=this;this.queryKey="presentation_mode",this.webClass="article-content",this.preClass="presentation-only",this.mode=this.getMode(),this.setMode(),this.assignClassesViaComments(),this.tryMoveToFirstChapter(),window.addEventListener("keyup",function(t){t.altKey&&("p"!=t.key&&"P"!=t.key&&"KeyP"!=t.code||e.toggle())})}return t.prototype.tryMoveToFirstChapter=function(){if(this.mode===PresentationMode.Slides&&(""===location.pathname||"/"===location.pathname)){var t=document.querySelector(".sidebar .chapter");if(!t)return console.error("unable to find chapter 1 link for paging. Please manually click into chapter 1");t.firstChild.firstChild.click()}},t.prototype.assignClassesViaComments=function(){for(var t,e=document.createNodeIterator(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,null),n=this.mode===PresentationMode.Web?"not-presenting":"presenting",o=null;t=e.nextNode();)if(8===t.nodeType){var i=t.nodeValue.trim();"web-only"===i?o=this.webClass:"slides-only"===i?o=this.preClass:i.startsWith("notes")?this.processNotes(i):"web-only-end"!==i&&"slides-only-end"!==i&&"notes-end"!==i||(o=null)}else 1===t.nodeType&&null!==o&&t.classList.add(o,n)},t.prototype.getMode=function(){var e=localStorage.getItem(this.queryKey);if(null===e)return PresentationMode.Web;try{var t=parseInt(e);return 1<t||t<0?(console.error("presentation_mode was out of range",t),PresentationMode.Web):t}catch(t){return console.error("presentation_mode present in localStorage but value is not an integer",e,t),PresentationMode.Web}},t.prototype.setMode=function(){localStorage.setItem(this.queryKey,this.mode.toString())},t.prototype.updatePage=function(){this.updateElements(document.querySelectorAll(".presentation-only")),this.updateElements(document.querySelectorAll(".article-content"))},t.prototype.updateElements=function(t){for(var e=0;e<t.length;e++){var n=t[e];this.mode===PresentationMode.Slides?n.classList.replace("not-presenting","presenting"):n.classList.replace("presenting","not-presenting")}},t.prototype.toggle=function(){switch(this.mode){case PresentationMode.Slides:this.mode=PresentationMode.Web;break;case PresentationMode.Web:this.mode=PresentationMode.Slides}this.setMode(),this.updatePage()},t.prototype.processNotes=function(t){var e=t.indexOf("\n");console.log("%c"+t.substr(e+1),"font-size: 14pt;")},t}(),___presentationModeHider=new PresentationModeHider,END_KEY="end-date",MIN_KEY="total-minutes",PresentationTimer=function(){function t(){var e=this;window.addEventListener("keyup",function(t){if(t.altKey)switch(t.key){case"g":return e.start();case"ArrowUp":return e.updateEnd(1);case"ArrowDown":return e.updateEnd(-1);case"m":return e.promptForMinutes();case".":return e.stop()}});var t=this.getEnd();t&&(this.end=new Date(t),this.tick())}return t.prototype.tick=function(){this.timeout=null;var t=new Date;if(t>=this.end)return this.update(0,0);var e=+this.end-+t,n=Math.floor(e/1e3),o=Math.floor(n/60);this.update(o,n-60*o),this.timeout=window.setTimeout(this.tick.bind(this),1e3)},t.prototype.getEnd=function(){var t=localStorage.getItem(END_KEY);this.minutes=+localStorage.getItem(MIN_KEY)||45;var e=new Date;if(e.setHours(e.getHours()+1),t&&!(+t<+e))return t;localStorage.removeItem(END_KEY)},t.prototype.start=function(){var t=new Date,e=t.getMinutes();t.setMinutes(e+this.minutes),this.end=t,this.saveGlobals(),this.tick()},t.prototype.stop=function(){this.timeout&&clearTimeout(this.timeout),localStorage.removeItem(END_KEY);var t=document.getElementById("counter");t&&t.parentElement.removeChild(t)},t.prototype.update=function(t,e){var n=this.getCounterEl();n.innerHTML=this.formatTime(t,e),n.style.borderColor=this.getColor(60*t+e)},t.prototype.formatTime=function(t,e){if(60<=t){var n=Math.floor(t/60);return t-=60*n,n+":"+this.twoDigits(t)+":"+this.twoDigits(e)}return this.twoDigits(t)+":"+this.twoDigits(e)},t.prototype.twoDigits=function(t){return("0"+t).substr(-2)},t.prototype.getCounterEl=function(){var t=document.getElementById("counter");return t||((t=document.createElement("div")).style.position="fixed",t.style.left="calc(100% - 10px)",t.style.top="55px",t.style.width="70px",t.style.textAlign="right",t.style.border="2px solid var(--quote-border)",t.style.color="var(--fg)",t.style.borderRadius="5px",t.style.paddingLeft="5px",t.style.backgroundColor="var(--bg)",t.setAttribute("id","counter"),t.addEventListener("mouseenter",function(t){t.currentTarget.style.left="calc(100% - 70px)",t.currentTarget.style.textAlign="left"}),t.addEventListener("mouseleave",function(t){t.currentTarget.style.left="calc(100% - 10px)",t.currentTarget.style.textAlign="right"}),document.body.appendChild(t),t)},t.prototype.getColor=function(t){var e=t/(60*this.minutes),n=1-e,o=0,i=0;return n<.5?o=i=255*n*2:i=2*e*(o=255),"rgb("+o.toFixed(2)+", "+i.toFixed(2)+", 0)"},t.prototype.updateEnd=function(t){this.timeout&&(clearTimeout(this.timeout),this.timeout=null);var e=this.end.getMinutes();e+=t,this.minutes+=t,this.end.setMinutes(e),this.saveGlobals(),this.tick()},t.prototype.saveGlobals=function(){localStorage.setItem(END_KEY,this.end.toString()),this.saveMinutes()},t.prototype.saveMinutes=function(){localStorage.setItem(MIN_KEY,this.minutes.toString())},t.prototype.promptForMinutes=function(){if(!document.getElementById("minutes-prompt")){var t=document.createElement("div");t.setAttribute("id","minutes-prompt"),t.style.position="absolute",t.style.left="calc(50% - 50px)",t.style.top="calc(50% - 25px)",t.style.display="flex",t.style.flexFlow="column",t.style.justifyContent="space-between",t.style.alignItems="center",t.style.boxShadow="1px 1px 1px 1px var(--quote-border)",t.style.backgroundColor="var(--bg)",t.style.padding="5px";var e=document.createElement("label");e.setAttribute("for","minutes-inputs"),e.appendChild(document.createTextNode("Presentation Length"));var n=document.createElement("input");n.setAttribute("type","number"),n.setAttribute("min","1"),n.setAttribute("name","minutes-input"),n.setAttribute("id","minutes-input"),n.value=(this.minutes||0).toString();var o=document.createElement("button");o.setAttribute("type","button"),o.addEventListener("click",this.promptOk.bind(this)),o.appendChild(document.createTextNode("OK")),t.appendChild(e),t.appendChild(n),t.appendChild(o),document.body.appendChild(t),n.focus()}},t.prototype.promptOk=function(){var t=document.getElementById("minutes-input");if(t){var e=+t.value;this.end?this.updateEnd(e-this.minutes):(this.minutes=e,this.saveMinutes())}t.parentElement.parentElement.removeChild(t.parentElement)},t}(),___presentationTimer=new PresentationTimer;</script><div style="break-before: page; page-break-before: always;"></div><style>.presentation-only.not-presenting {
   display: none;
 }
@@ -176,22 +176,22 @@
 </style>
 <h1 id="http-primer"><a class="header" href="#http-primer">HTTP Primer</a></h1>
 <!--web-only-->
-<p>This book will discuss how Luncheon provides helpers for serializing and deserializing HTTP
-Request and Response types. As an introduction, this chapter will provide a brief overview of
-the anatomy of an HTTP request/response.</p>
+<p>This book will discuss how Luncheon provides helpers for serializing and deserializing HTTP Request
+and Response types. As an introduction, this chapter will provide a brief overview of the anatomy of
+an HTTP request/response.</p>
 <p>Both a request and response are encoded as text, the structure of that text starts with the first
 line. For a request, this will be encoded as <code>&lt;method&gt; &lt;path&gt; &lt;version&gt;</code> where <code>method</code> is a string
 (typically <code>GET</code>, <code>POST</code>, <code>PUT</code>, or <code>DELETE</code>), <code>path</code> is a string representing the url path and
-finally <code>version</code> will be <code>HTTP/&lt;version&gt;</code> where the version can be <code>1.0</code> or <code>1.1</code>, the
-latter being the most common (note: HTTP/2 exists but is essentially a break version change).
-For a response, this will be encoded as <code>&lt;version&gt; &lt;status-code&gt; &lt;status-message&gt;</code> where <code>version</code>
-is the same as a a request, <code>status-code</code> is a 3 digit number and the <code>status-message</code> is a string
-associated with the <code>status-code</code>. The new line character for this first line will always be <code>\r\n</code>.</p>
-<p>After the first line, we have a series of header lines, these are expected to be
-<code>&lt;header-name&gt;: &lt;header-value&gt;</code> again followed by <code>\r\n</code>. After the headers an empty line
+finally <code>version</code> will be <code>HTTP/&lt;version&gt;</code> where the version can be <code>1.0</code> or <code>1.1</code>, the latter being
+the most common (note: HTTP/2 exists but is essentially a break version change). For a response,
+this will be encoded as <code>&lt;version&gt; &lt;status-code&gt; &lt;status-message&gt;</code> where <code>version</code> is the same as a
+a request, <code>status-code</code> is a 3 digit number and the <code>status-message</code> is a string associated with
+the <code>status-code</code>. The new line character for this first line will always be <code>\r\n</code>.</p>
+<p>After the first line, we have a series of header lines, these are almost always
+<code>&lt;header-name&gt;: &lt;header-value&gt;</code> followed by <code>\r\n</code>. The headers end when we encounter an empty line
 using the <code>\r\n</code> as its new line character.</p>
-<p>After the headers we move onto the body which is essentially a blob of bytes that can be encoded
-in a few different ways. We aren't going to cover all that here but the most basic request/response
+<p>After the headers we move onto the body which is essentially a blob of bytes that can be encoded in
+a few different ways. We aren't going to cover all that here but the most basic request/response
 body would just be encoded as a string.</p>
 <!--web-only-end-->
 <!--slides-only-->
@@ -258,9 +258,9 @@ aaaaaaaaaa
 <!--slides-only-end-->
 <!--web-only-->
 <p>Luncheon is a lua module designed to parse and generate HTTP Requests and Responses.</p>
-<p>It provides a Request, Response and Headers &quot;classes&quot; that can be constructed either by
-consuming data on a socket or by calls to a series of builder methods.</p>
-<p>When constructing with a socket we use the luasocket ltn12 source API with helpers for</p>
+<p>It provides a Request, Response and Headers &quot;classes&quot; that can be constructed either by consuming
+data on a socket or by calls to a series of builder methods. The next two chapters will cover how
+these two constructor paths could be used.</p>
 <!--web-only-end-->
 <script>var PresentationMode;!function(t){t[t.Slides=0]="Slides",t[t.Web=1]="Web"}(PresentationMode=PresentationMode||{});var PresentationModeHider=function(){function t(){var e=this;this.queryKey="presentation_mode",this.webClass="article-content",this.preClass="presentation-only",this.mode=this.getMode(),this.setMode(),this.assignClassesViaComments(),this.tryMoveToFirstChapter(),window.addEventListener("keyup",function(t){t.altKey&&("p"!=t.key&&"P"!=t.key&&"KeyP"!=t.code||e.toggle())})}return t.prototype.tryMoveToFirstChapter=function(){if(this.mode===PresentationMode.Slides&&(""===location.pathname||"/"===location.pathname)){var t=document.querySelector(".sidebar .chapter");if(!t)return console.error("unable to find chapter 1 link for paging. Please manually click into chapter 1");t.firstChild.firstChild.click()}},t.prototype.assignClassesViaComments=function(){for(var t,e=document.createNodeIterator(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,null),n=this.mode===PresentationMode.Web?"not-presenting":"presenting",o=null;t=e.nextNode();)if(8===t.nodeType){var i=t.nodeValue.trim();"web-only"===i?o=this.webClass:"slides-only"===i?o=this.preClass:i.startsWith("notes")?this.processNotes(i):"web-only-end"!==i&&"slides-only-end"!==i&&"notes-end"!==i||(o=null)}else 1===t.nodeType&&null!==o&&t.classList.add(o,n)},t.prototype.getMode=function(){var e=localStorage.getItem(this.queryKey);if(null===e)return PresentationMode.Web;try{var t=parseInt(e);return 1<t||t<0?(console.error("presentation_mode was out of range",t),PresentationMode.Web):t}catch(t){return console.error("presentation_mode present in localStorage but value is not an integer",e,t),PresentationMode.Web}},t.prototype.setMode=function(){localStorage.setItem(this.queryKey,this.mode.toString())},t.prototype.updatePage=function(){this.updateElements(document.querySelectorAll(".presentation-only")),this.updateElements(document.querySelectorAll(".article-content"))},t.prototype.updateElements=function(t){for(var e=0;e<t.length;e++){var n=t[e];this.mode===PresentationMode.Slides?n.classList.replace("not-presenting","presenting"):n.classList.replace("presenting","not-presenting")}},t.prototype.toggle=function(){switch(this.mode){case PresentationMode.Slides:this.mode=PresentationMode.Web;break;case PresentationMode.Web:this.mode=PresentationMode.Slides}this.setMode(),this.updatePage()},t.prototype.processNotes=function(t){var e=t.indexOf("\n");console.log("%c"+t.substr(e+1),"font-size: 14pt;")},t}(),___presentationModeHider=new PresentationModeHider,END_KEY="end-date",MIN_KEY="total-minutes",PresentationTimer=function(){function t(){var e=this;window.addEventListener("keyup",function(t){if(t.altKey)switch(t.key){case"g":return e.start();case"ArrowUp":return e.updateEnd(1);case"ArrowDown":return e.updateEnd(-1);case"m":return e.promptForMinutes();case".":return e.stop()}});var t=this.getEnd();t&&(this.end=new Date(t),this.tick())}return t.prototype.tick=function(){this.timeout=null;var t=new Date;if(t>=this.end)return this.update(0,0);var e=+this.end-+t,n=Math.floor(e/1e3),o=Math.floor(n/60);this.update(o,n-60*o),this.timeout=window.setTimeout(this.tick.bind(this),1e3)},t.prototype.getEnd=function(){var t=localStorage.getItem(END_KEY);this.minutes=+localStorage.getItem(MIN_KEY)||45;var e=new Date;if(e.setHours(e.getHours()+1),t&&!(+t<+e))return t;localStorage.removeItem(END_KEY)},t.prototype.start=function(){var t=new Date,e=t.getMinutes();t.setMinutes(e+this.minutes),this.end=t,this.saveGlobals(),this.tick()},t.prototype.stop=function(){this.timeout&&clearTimeout(this.timeout),localStorage.removeItem(END_KEY);var t=document.getElementById("counter");t&&t.parentElement.removeChild(t)},t.prototype.update=function(t,e){var n=this.getCounterEl();n.innerHTML=this.formatTime(t,e),n.style.borderColor=this.getColor(60*t+e)},t.prototype.formatTime=function(t,e){if(60<=t){var n=Math.floor(t/60);return t-=60*n,n+":"+this.twoDigits(t)+":"+this.twoDigits(e)}return this.twoDigits(t)+":"+this.twoDigits(e)},t.prototype.twoDigits=function(t){return("0"+t).substr(-2)},t.prototype.getCounterEl=function(){var t=document.getElementById("counter");return t||((t=document.createElement("div")).style.position="fixed",t.style.left="calc(100% - 10px)",t.style.top="55px",t.style.width="70px",t.style.textAlign="right",t.style.border="2px solid var(--quote-border)",t.style.color="var(--fg)",t.style.borderRadius="5px",t.style.paddingLeft="5px",t.style.backgroundColor="var(--bg)",t.setAttribute("id","counter"),t.addEventListener("mouseenter",function(t){t.currentTarget.style.left="calc(100% - 70px)",t.currentTarget.style.textAlign="left"}),t.addEventListener("mouseleave",function(t){t.currentTarget.style.left="calc(100% - 10px)",t.currentTarget.style.textAlign="right"}),document.body.appendChild(t),t)},t.prototype.getColor=function(t){var e=t/(60*this.minutes),n=1-e,o=0,i=0;return n<.5?o=i=255*n*2:i=2*e*(o=255),"rgb("+o.toFixed(2)+", "+i.toFixed(2)+", 0)"},t.prototype.updateEnd=function(t){this.timeout&&(clearTimeout(this.timeout),this.timeout=null);var e=this.end.getMinutes();e+=t,this.minutes+=t,this.end.setMinutes(e),this.saveGlobals(),this.tick()},t.prototype.saveGlobals=function(){localStorage.setItem(END_KEY,this.end.toString()),this.saveMinutes()},t.prototype.saveMinutes=function(){localStorage.setItem(MIN_KEY,this.minutes.toString())},t.prototype.promptForMinutes=function(){if(!document.getElementById("minutes-prompt")){var t=document.createElement("div");t.setAttribute("id","minutes-prompt"),t.style.position="absolute",t.style.left="calc(50% - 50px)",t.style.top="calc(50% - 25px)",t.style.display="flex",t.style.flexFlow="column",t.style.justifyContent="space-between",t.style.alignItems="center",t.style.boxShadow="1px 1px 1px 1px var(--quote-border)",t.style.backgroundColor="var(--bg)",t.style.padding="5px";var e=document.createElement("label");e.setAttribute("for","minutes-inputs"),e.appendChild(document.createTextNode("Presentation Length"));var n=document.createElement("input");n.setAttribute("type","number"),n.setAttribute("min","1"),n.setAttribute("name","minutes-input"),n.setAttribute("id","minutes-input"),n.value=(this.minutes||0).toString();var o=document.createElement("button");o.setAttribute("type","button"),o.addEventListener("click",this.promptOk.bind(this)),o.appendChild(document.createTextNode("OK")),t.appendChild(e),t.appendChild(n),t.appendChild(o),document.body.appendChild(t),n.focus()}},t.prototype.promptOk=function(){var t=document.getElementById("minutes-input");if(t){var e=+t.value;this.end?this.updateEnd(e-this.minutes):(this.minutes=e,this.saveMinutes())}t.parentElement.parentElement.removeChild(t.parentElement)},t}(),___presentationTimer=new PresentationTimer;</script><div style="break-before: page; page-break-before: always;"></div><style>.presentation-only.not-presenting {
   display: none;
@@ -281,28 +281,103 @@ consuming data on a socket or by calls to a series of builder methods.</p>
 the next value in a series. One of the nicest features here is that this pattern looks very similar
 to a lua iterator.</p>
 <!--web-only-end-->
-<p>For more details on LTN12, see the
-<a href="https://lunarmodules.github.io/luasocket/ltn12.html">Lua Socket docs</a></p>
-<pre><code class="language-lua">-- LTN12 Example
-
---- Create a source that will return an ever increasing string of 'a'
---- each call will provide a string 1 letter longer than the previous
-local function create_source()
-    local some_state = 0;
-    return function()
-        some_state = some_state + 1
-        return string.rep(&quot;a&quot;, some_state)
+<p>When constructing with a socket we use the luasocket ltn12 source API to make the construction a
+little more flexible,
+<a href="http://lua-users.org/wiki/FiltersSourcesAndSinks">see the details guide on ltn12</a> for more
+information on this API. For Luncheon, this looks like a function that when called with the same
+arguments expected in a call to the
+<a href="https://lunarmodules.github.io/luasocket/tcp.html#receive">luasocket TCP <code>receive</code></a> method.</p>
+<p>Here is an example of what a test source might look like.</p>
+<pre><code class="language-lua">local function make_request_source()
+  local head_buf = {
+    &quot;GET /a HTTP/1.1&quot;,
+    &quot;Host: 0.0.0.0:80&quot;,
+    &quot;Content-Length: 10&quot;,
+    &quot;&quot;,
+  }
+  local body_buf = {
+    &quot;aaaaaaaaaa&quot;,
+    &quot;&quot;,
+  }
+  local function inner_source(pattern)
+    if #head_buf == 0 and #body_buf == 0 then
+      return nil, &quot;closed&quot;
     end
-end
-
-for chunk in create_source() do
-    print(chunk)
-    if #chunk &gt; 100 then
-        break
+    -- The all pattern
+    if pattern == &quot;*a&quot; then
+      -- concat all the strings remaining together
+      local ret = table.concat(head_buf, &quot;\r\n&quot;) .. table.concat(body_buf, &quot;&quot;)
+      -- set both buffers to empty
+      head_buf = {}
+      body_buf = {}
+      return ret
     end
+    if pattern == &quot;*l&quot; or not pattern then
+      -- first try and return the first line or headers
+      local maybe_ret = table.remove(head_buf, 1)
+      if maybe_ret then
+        return maybe_ret
+      end
+      -- no headers, return the body part
+      return table.remove(body_buf, 1)
+    end
+    -- the pattern was an integer
+    if #head_buf &gt; 0 then
+      return nil, &quot;invalid pattern for headers&quot;
+    end
+    local body = table.remove(body_buf, 1)
+    -- the argument was too large for our remaining payload
+    if not body or #body &gt; pattern then
+      return nil, &quot;slice too large&quot;, body
+    end
+    -- The argument is shorter than our body, trim the remainder
+    if #body &lt; pattern then
+      local rem = string.sub(body, pattern)
+      table.insert(body_buf, 1, rem)
+      return string.sub(1, pattern)
+    end
+    -- the argument was exactly the length of body!
+    return body
+  end
+  return function(pattern)
+    local ret, err = inner_source(pattern)
+    print(string.format(&quot;source(%s) -&gt; %q, %q&quot;, pattern, ret, err))
+    return ret, err
+  end
 end
+local source = make_source_request()
+local chunk
+-- Loop over the head_buf lines
+while chunk ~= &quot;&quot; do
+  chunk = assert(source())
+end
+-- Read by body chunk
+chunk = assert(source())
+</code></pre>
+<p>Breaking this down, we first define a function called <code>make_request_source</code> which will setup a few
+tables that will act as buffers for us. It then defines a function <code>inner_source</code>, that takes one
+argument <code>pattern</code>, which can be either <code>&quot;*a&quot;</code> (read until close), <code>&quot;*l&quot;</code> (read next line) or an
+integer indicating how many bytes to read. When called, it will remove the first element in our
+<code>head_buff</code> table until that table is empty, it will then remove the first element to our
+<code>body_buff</code> table until it is empty. Any calls to this function after both of the buff tables are
+empty will return <code>nil, &quot;closed&quot;</code>. Finally it returns a function that will call <code>inner_source</code>
+capturing the return value and then printing the argument and return values to the terminal.</p>
+<p>We then assign this function to the variable <code>source</code> and loop over the return value until we find
+the empty line to indicate the end of the headers. We then call it one last time to read the body.</p>
+<p>If we were to run the above, we would get something like</p>
+<pre><code class="language-text">source(nil) -&gt; &quot;GET /a HTTP/1.1&quot;, nil
+source(nil) -&gt; &quot;Host: 0.0.0.0:80&quot;, nil
+source(nil) -&gt; &quot;Content-Length: 10&quot;, nil
+source(nil) -&gt; &quot;&quot;, nil
+source(nil) -&gt; &quot;aaaaaaaaaa&quot;, nil
+source(nil) -&gt; &quot;&quot;, nil
+source(10) -&gt; nil, &quot;closed&quot;
 </code></pre>
 <h2 id="examples-1"><a class="header" href="#examples-1">Examples</a></h2>
+<p>Luncheon provides 2 constructors for both <code>Request</code> and <code>Response</code> that will create a source for
+you. These method are <code>tcp_source</code> and <code>udp_source</code>, each of these takes a luasocket (or cosock)
+socket and then wraps them in a <code>source</code> for you. Below are some examples of using the <code>tcp_source</code>
+constructor.</p>
 <pre><code class="language-lua">-- server.lua
 local lunch = require &quot;luncheon&quot;
 local socket = require &quot;socket&quot;
@@ -370,7 +445,7 @@ socket. This avoids eagerly reading the whole request body in the event that it 
 <h1 id="builders"><a class="header" href="#builders">Builders</a></h1>
 <!--web-only-->
 <p>The second constructor provided by Luncheon is the Builder. This allows for constructing requests
-or responses in memory to be then serialized.</p>
+or responses in memory to be serialized.</p>
 <!--web-only-end-->
 <!--slides-only-->
 <ul>
@@ -418,9 +493,9 @@ sock:send(req:serialize())
 <!--web-only-->
 <p>In the above examples, the Response is constructed using the builder methods and then use the <code>iter</code>
 method to print out each chunk of the request to the terminal. A chunk in this context will be a
-line for the first line and the headers, after that it will depend on how the encoding.</p>
-<p>The Request is constructed using the builder methods and then uses the <code>serialize</code> method to
-convert it to a string and then passes the whole thing off to <code>sock:send</code>.</p>
+line for the first line and the headers, after that it will depend on the encoding.</p>
+<p>The Request is constructed using the builder methods and then uses the <code>serialize</code> method to convert
+it to a string and then passes the whole thing off to <code>sock:send</code>.</p>
 <!--web-only-end-->
 <script>var PresentationMode;!function(t){t[t.Slides=0]="Slides",t[t.Web=1]="Web"}(PresentationMode=PresentationMode||{});var PresentationModeHider=function(){function t(){var e=this;this.queryKey="presentation_mode",this.webClass="article-content",this.preClass="presentation-only",this.mode=this.getMode(),this.setMode(),this.assignClassesViaComments(),this.tryMoveToFirstChapter(),window.addEventListener("keyup",function(t){t.altKey&&("p"!=t.key&&"P"!=t.key&&"KeyP"!=t.code||e.toggle())})}return t.prototype.tryMoveToFirstChapter=function(){if(this.mode===PresentationMode.Slides&&(""===location.pathname||"/"===location.pathname)){var t=document.querySelector(".sidebar .chapter");if(!t)return console.error("unable to find chapter 1 link for paging. Please manually click into chapter 1");t.firstChild.firstChild.click()}},t.prototype.assignClassesViaComments=function(){for(var t,e=document.createNodeIterator(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,null),n=this.mode===PresentationMode.Web?"not-presenting":"presenting",o=null;t=e.nextNode();)if(8===t.nodeType){var i=t.nodeValue.trim();"web-only"===i?o=this.webClass:"slides-only"===i?o=this.preClass:i.startsWith("notes")?this.processNotes(i):"web-only-end"!==i&&"slides-only-end"!==i&&"notes-end"!==i||(o=null)}else 1===t.nodeType&&null!==o&&t.classList.add(o,n)},t.prototype.getMode=function(){var e=localStorage.getItem(this.queryKey);if(null===e)return PresentationMode.Web;try{var t=parseInt(e);return 1<t||t<0?(console.error("presentation_mode was out of range",t),PresentationMode.Web):t}catch(t){return console.error("presentation_mode present in localStorage but value is not an integer",e,t),PresentationMode.Web}},t.prototype.setMode=function(){localStorage.setItem(this.queryKey,this.mode.toString())},t.prototype.updatePage=function(){this.updateElements(document.querySelectorAll(".presentation-only")),this.updateElements(document.querySelectorAll(".article-content"))},t.prototype.updateElements=function(t){for(var e=0;e<t.length;e++){var n=t[e];this.mode===PresentationMode.Slides?n.classList.replace("not-presenting","presenting"):n.classList.replace("presenting","not-presenting")}},t.prototype.toggle=function(){switch(this.mode){case PresentationMode.Slides:this.mode=PresentationMode.Web;break;case PresentationMode.Web:this.mode=PresentationMode.Slides}this.setMode(),this.updatePage()},t.prototype.processNotes=function(t){var e=t.indexOf("\n");console.log("%c"+t.substr(e+1),"font-size: 14pt;")},t}(),___presentationModeHider=new PresentationModeHider,END_KEY="end-date",MIN_KEY="total-minutes",PresentationTimer=function(){function t(){var e=this;window.addEventListener("keyup",function(t){if(t.altKey)switch(t.key){case"g":return e.start();case"ArrowUp":return e.updateEnd(1);case"ArrowDown":return e.updateEnd(-1);case"m":return e.promptForMinutes();case".":return e.stop()}});var t=this.getEnd();t&&(this.end=new Date(t),this.tick())}return t.prototype.tick=function(){this.timeout=null;var t=new Date;if(t>=this.end)return this.update(0,0);var e=+this.end-+t,n=Math.floor(e/1e3),o=Math.floor(n/60);this.update(o,n-60*o),this.timeout=window.setTimeout(this.tick.bind(this),1e3)},t.prototype.getEnd=function(){var t=localStorage.getItem(END_KEY);this.minutes=+localStorage.getItem(MIN_KEY)||45;var e=new Date;if(e.setHours(e.getHours()+1),t&&!(+t<+e))return t;localStorage.removeItem(END_KEY)},t.prototype.start=function(){var t=new Date,e=t.getMinutes();t.setMinutes(e+this.minutes),this.end=t,this.saveGlobals(),this.tick()},t.prototype.stop=function(){this.timeout&&clearTimeout(this.timeout),localStorage.removeItem(END_KEY);var t=document.getElementById("counter");t&&t.parentElement.removeChild(t)},t.prototype.update=function(t,e){var n=this.getCounterEl();n.innerHTML=this.formatTime(t,e),n.style.borderColor=this.getColor(60*t+e)},t.prototype.formatTime=function(t,e){if(60<=t){var n=Math.floor(t/60);return t-=60*n,n+":"+this.twoDigits(t)+":"+this.twoDigits(e)}return this.twoDigits(t)+":"+this.twoDigits(e)},t.prototype.twoDigits=function(t){return("0"+t).substr(-2)},t.prototype.getCounterEl=function(){var t=document.getElementById("counter");return t||((t=document.createElement("div")).style.position="fixed",t.style.left="calc(100% - 10px)",t.style.top="55px",t.style.width="70px",t.style.textAlign="right",t.style.border="2px solid var(--quote-border)",t.style.color="var(--fg)",t.style.borderRadius="5px",t.style.paddingLeft="5px",t.style.backgroundColor="var(--bg)",t.setAttribute("id","counter"),t.addEventListener("mouseenter",function(t){t.currentTarget.style.left="calc(100% - 70px)",t.currentTarget.style.textAlign="left"}),t.addEventListener("mouseleave",function(t){t.currentTarget.style.left="calc(100% - 10px)",t.currentTarget.style.textAlign="right"}),document.body.appendChild(t),t)},t.prototype.getColor=function(t){var e=t/(60*this.minutes),n=1-e,o=0,i=0;return n<.5?o=i=255*n*2:i=2*e*(o=255),"rgb("+o.toFixed(2)+", "+i.toFixed(2)+", 0)"},t.prototype.updateEnd=function(t){this.timeout&&(clearTimeout(this.timeout),this.timeout=null);var e=this.end.getMinutes();e+=t,this.minutes+=t,this.end.setMinutes(e),this.saveGlobals(),this.tick()},t.prototype.saveGlobals=function(){localStorage.setItem(END_KEY,this.end.toString()),this.saveMinutes()},t.prototype.saveMinutes=function(){localStorage.setItem(MIN_KEY,this.minutes.toString())},t.prototype.promptForMinutes=function(){if(!document.getElementById("minutes-prompt")){var t=document.createElement("div");t.setAttribute("id","minutes-prompt"),t.style.position="absolute",t.style.left="calc(50% - 50px)",t.style.top="calc(50% - 25px)",t.style.display="flex",t.style.flexFlow="column",t.style.justifyContent="space-between",t.style.alignItems="center",t.style.boxShadow="1px 1px 1px 1px var(--quote-border)",t.style.backgroundColor="var(--bg)",t.style.padding="5px";var e=document.createElement("label");e.setAttribute("for","minutes-inputs"),e.appendChild(document.createTextNode("Presentation Length"));var n=document.createElement("input");n.setAttribute("type","number"),n.setAttribute("min","1"),n.setAttribute("name","minutes-input"),n.setAttribute("id","minutes-input"),n.value=(this.minutes||0).toString();var o=document.createElement("button");o.setAttribute("type","button"),o.addEventListener("click",this.promptOk.bind(this)),o.appendChild(document.createTextNode("OK")),t.appendChild(e),t.appendChild(n),t.appendChild(o),document.body.appendChild(t),n.focus()}},t.prototype.promptOk=function(){var t=document.getElementById("minutes-input");if(t){var e=+t.value;this.end?this.updateEnd(e-this.minutes):(this.minutes=e,this.saveMinutes())}t.parentElement.parentElement.removeChild(t.parentElement)},t}(),___presentationTimer=new PresentationTimer;</script><div style="break-before: page; page-break-before: always;"></div><style>.presentation-only.not-presenting {
   display: none;
@@ -447,24 +522,51 @@ convert it to a string and then passes the whole thing off to <code>sock:send</c
 <li>Accessors for last entry or all entries</li>
 </ul>
 <!--slides-only-end-->
+<!--web-only-->
+<p>Since both <code>Request</code> and <code>Response</code> need to be able to parse and generate headers, this has been
+split out into its own &quot;class&quot;. This acts similar to a standard lua table however since headers can
+have duplicate keys, some extra care must be taken to make sure all of the values are accessible.</p>
+<p>For building up a new set of headers there are a few ways to add new values, the preferred way would
+be to use the <code>append</code> method, which takes a key string and a value string and will add a duplicate
+key-value pair to the map if needed. Since there are some cases where you also want to overwrite any
+existing value, the <code>replace</code> method is provided.</p>
+<p>Since a primary use case is parsing headers that are provided in a chunk of text there is also a
+method <code>append_chunk</code> that takes a single string argument and will parse multiple headers in the
+provided string.</p>
+<p>For accessing headers, there are also 2 method due to the potential to have duplicate header keys
+with different values. The first is the method <code>get_all</code> which takes the key string and returns
+a list of string values, even if there is only 1 entry it will always be a list. Alternatively,
+the <code>get_one</code> method will always provide the <em>last</em> value inserted into the map.</p>
+<p>One last thing to touch on before looking at some examples is header keys are <em>not case sensitive</em>,
+Luncheon's headers type stores the keys by converting them to lower snake case and will do the same
+conversion on any keys passed to <code>get_all</code> or <code>get_one</code>.</p>
+<!--web-only-end-->
 <h2 id="examples-3"><a class="header" href="#examples-3">Examples</a></h2>
 <pre><code class="language-lua">local lunch = require &quot;luncheon&quot;
 
+-- Create a new empty header map
 local headers = lunch.Headers.new()
-
+local date1 = &quot;Date: Tue, 18 Apr 2023 10:33:00 CST&quot;
+local date2 = &quot;Date: Mon, 17 Apr 2023 10:33:00 CST&quot;
+-- add a new Host header to the map
 headers:append(&quot;Host&quot;, &quot;0.0.0.0&quot;)
-headers:append_chunk(&quot;Date: Tue, 18 Apr 2023 10:33:00 CST&quot;)
-headers:append_chunk(&quot;Date: Mon, 17 Apr 2023 10:33:00 CST&quot;)
+--Add 2 date headers to the map
+headers:append_chunk(date1)
+headers:append_chunk(date2)
 
-assert(headers:get_one(&quot;host&quot;) == &quot;0.0.0.0)
+-- get_one for host will return the value inserted above
+assert(headers:get_one(&quot;host&quot;) == &quot;0.0.0.0&quot;)
+-- get_all will give us a list of 2 values
 local dates = headers:get_all(&quot;Date&quot;)
 assert(#dates == 2)
 
-print(&quot;DATES:)
+print(&quot;DATES:&quot;)
 for i, value in pairs(dates) do
     print(i, value)
 end
 print(&quot;----&quot;)
+-- get_one on a key with multiple values will always return the last value added
+print(headers:get_one(&quot;date&quot;) == date2)
 </code></pre>
 <script>var PresentationMode;!function(t){t[t.Slides=0]="Slides",t[t.Web=1]="Web"}(PresentationMode=PresentationMode||{});var PresentationModeHider=function(){function t(){var e=this;this.queryKey="presentation_mode",this.webClass="article-content",this.preClass="presentation-only",this.mode=this.getMode(),this.setMode(),this.assignClassesViaComments(),this.tryMoveToFirstChapter(),window.addEventListener("keyup",function(t){t.altKey&&("p"!=t.key&&"P"!=t.key&&"KeyP"!=t.code||e.toggle())})}return t.prototype.tryMoveToFirstChapter=function(){if(this.mode===PresentationMode.Slides&&(""===location.pathname||"/"===location.pathname)){var t=document.querySelector(".sidebar .chapter");if(!t)return console.error("unable to find chapter 1 link for paging. Please manually click into chapter 1");t.firstChild.firstChild.click()}},t.prototype.assignClassesViaComments=function(){for(var t,e=document.createNodeIterator(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,null),n=this.mode===PresentationMode.Web?"not-presenting":"presenting",o=null;t=e.nextNode();)if(8===t.nodeType){var i=t.nodeValue.trim();"web-only"===i?o=this.webClass:"slides-only"===i?o=this.preClass:i.startsWith("notes")?this.processNotes(i):"web-only-end"!==i&&"slides-only-end"!==i&&"notes-end"!==i||(o=null)}else 1===t.nodeType&&null!==o&&t.classList.add(o,n)},t.prototype.getMode=function(){var e=localStorage.getItem(this.queryKey);if(null===e)return PresentationMode.Web;try{var t=parseInt(e);return 1<t||t<0?(console.error("presentation_mode was out of range",t),PresentationMode.Web):t}catch(t){return console.error("presentation_mode present in localStorage but value is not an integer",e,t),PresentationMode.Web}},t.prototype.setMode=function(){localStorage.setItem(this.queryKey,this.mode.toString())},t.prototype.updatePage=function(){this.updateElements(document.querySelectorAll(".presentation-only")),this.updateElements(document.querySelectorAll(".article-content"))},t.prototype.updateElements=function(t){for(var e=0;e<t.length;e++){var n=t[e];this.mode===PresentationMode.Slides?n.classList.replace("not-presenting","presenting"):n.classList.replace("presenting","not-presenting")}},t.prototype.toggle=function(){switch(this.mode){case PresentationMode.Slides:this.mode=PresentationMode.Web;break;case PresentationMode.Web:this.mode=PresentationMode.Slides}this.setMode(),this.updatePage()},t.prototype.processNotes=function(t){var e=t.indexOf("\n");console.log("%c"+t.substr(e+1),"font-size: 14pt;")},t}(),___presentationModeHider=new PresentationModeHider,END_KEY="end-date",MIN_KEY="total-minutes",PresentationTimer=function(){function t(){var e=this;window.addEventListener("keyup",function(t){if(t.altKey)switch(t.key){case"g":return e.start();case"ArrowUp":return e.updateEnd(1);case"ArrowDown":return e.updateEnd(-1);case"m":return e.promptForMinutes();case".":return e.stop()}});var t=this.getEnd();t&&(this.end=new Date(t),this.tick())}return t.prototype.tick=function(){this.timeout=null;var t=new Date;if(t>=this.end)return this.update(0,0);var e=+this.end-+t,n=Math.floor(e/1e3),o=Math.floor(n/60);this.update(o,n-60*o),this.timeout=window.setTimeout(this.tick.bind(this),1e3)},t.prototype.getEnd=function(){var t=localStorage.getItem(END_KEY);this.minutes=+localStorage.getItem(MIN_KEY)||45;var e=new Date;if(e.setHours(e.getHours()+1),t&&!(+t<+e))return t;localStorage.removeItem(END_KEY)},t.prototype.start=function(){var t=new Date,e=t.getMinutes();t.setMinutes(e+this.minutes),this.end=t,this.saveGlobals(),this.tick()},t.prototype.stop=function(){this.timeout&&clearTimeout(this.timeout),localStorage.removeItem(END_KEY);var t=document.getElementById("counter");t&&t.parentElement.removeChild(t)},t.prototype.update=function(t,e){var n=this.getCounterEl();n.innerHTML=this.formatTime(t,e),n.style.borderColor=this.getColor(60*t+e)},t.prototype.formatTime=function(t,e){if(60<=t){var n=Math.floor(t/60);return t-=60*n,n+":"+this.twoDigits(t)+":"+this.twoDigits(e)}return this.twoDigits(t)+":"+this.twoDigits(e)},t.prototype.twoDigits=function(t){return("0"+t).substr(-2)},t.prototype.getCounterEl=function(){var t=document.getElementById("counter");return t||((t=document.createElement("div")).style.position="fixed",t.style.left="calc(100% - 10px)",t.style.top="55px",t.style.width="70px",t.style.textAlign="right",t.style.border="2px solid var(--quote-border)",t.style.color="var(--fg)",t.style.borderRadius="5px",t.style.paddingLeft="5px",t.style.backgroundColor="var(--bg)",t.setAttribute("id","counter"),t.addEventListener("mouseenter",function(t){t.currentTarget.style.left="calc(100% - 70px)",t.currentTarget.style.textAlign="left"}),t.addEventListener("mouseleave",function(t){t.currentTarget.style.left="calc(100% - 10px)",t.currentTarget.style.textAlign="right"}),document.body.appendChild(t),t)},t.prototype.getColor=function(t){var e=t/(60*this.minutes),n=1-e,o=0,i=0;return n<.5?o=i=255*n*2:i=2*e*(o=255),"rgb("+o.toFixed(2)+", "+i.toFixed(2)+", 0)"},t.prototype.updateEnd=function(t){this.timeout&&(clearTimeout(this.timeout),this.timeout=null);var e=this.end.getMinutes();e+=t,this.minutes+=t,this.end.setMinutes(e),this.saveGlobals(),this.tick()},t.prototype.saveGlobals=function(){localStorage.setItem(END_KEY,this.end.toString()),this.saveMinutes()},t.prototype.saveMinutes=function(){localStorage.setItem(MIN_KEY,this.minutes.toString())},t.prototype.promptForMinutes=function(){if(!document.getElementById("minutes-prompt")){var t=document.createElement("div");t.setAttribute("id","minutes-prompt"),t.style.position="absolute",t.style.left="calc(50% - 50px)",t.style.top="calc(50% - 25px)",t.style.display="flex",t.style.flexFlow="column",t.style.justifyContent="space-between",t.style.alignItems="center",t.style.boxShadow="1px 1px 1px 1px var(--quote-border)",t.style.backgroundColor="var(--bg)",t.style.padding="5px";var e=document.createElement("label");e.setAttribute("for","minutes-inputs"),e.appendChild(document.createTextNode("Presentation Length"));var n=document.createElement("input");n.setAttribute("type","number"),n.setAttribute("min","1"),n.setAttribute("name","minutes-input"),n.setAttribute("id","minutes-input"),n.value=(this.minutes||0).toString();var o=document.createElement("button");o.setAttribute("type","button"),o.addEventListener("click",this.promptOk.bind(this)),o.appendChild(document.createTextNode("OK")),t.appendChild(e),t.appendChild(n),t.appendChild(o),document.body.appendChild(t),n.focus()}},t.prototype.promptOk=function(){var t=document.getElementById("minutes-input");if(t){var e=+t.value;this.end?this.updateEnd(e-this.minutes):(this.minutes=e,this.saveMinutes())}t.parentElement.parentElement.removeChild(t.parentElement)},t}(),___presentationTimer=new PresentationTimer;</script><div style="break-before: page; page-break-before: always;"></div><style>.presentation-only.not-presenting {
   display: none;
@@ -498,13 +600,14 @@ print(&quot;----&quot;)
 </ul>
 <!--slides-only-end-->
 <!--web-only-->
-<p><a href="https://github.com/cosock/luncheon/pull/6">An upcoming pull request</a> is hopefully merging
-soon that will clean up some parts of this project. The first thing it is trying to achieve
-is to make the API surface of Reqeust and Response consistent. Previously the two types
-provided different method names for <code>get_content_length</code>. Another important change here is moving
-the shared code into a single shared module, previous this was manually being copied and pasted
-and resulted in some inconsistencies across the implementations. Finally this adds support for
-chunk encoding for both parsing and generating request with chunk encoding.</p>
+<p><a href="https://github.com/cosock/luncheon/pull/6">An upcoming pull request</a> is hopefully merging soon that
+will clean up some parts of this project. The first thing it is trying to achieve is to make the API
+surface of Request and Response consistent. Previously the two types provided different method names
+for <code>get_content_length</code>. Another important change here is moving the shared code into a single
+shared module, previous this was manually being copied and pasted and resulted in some
+inconsistencies across the implementations. This also adds support for chunk encoding for both
+parsing and generating request with chunk encoding. Lastly it will provide a method of sending bytes
+w/o accumlating the whole body in memory which is not currently available.</p>
 <!--web-only-end-->
 <script>var PresentationMode;!function(t){t[t.Slides=0]="Slides",t[t.Web=1]="Web"}(PresentationMode=PresentationMode||{});var PresentationModeHider=function(){function t(){var e=this;this.queryKey="presentation_mode",this.webClass="article-content",this.preClass="presentation-only",this.mode=this.getMode(),this.setMode(),this.assignClassesViaComments(),this.tryMoveToFirstChapter(),window.addEventListener("keyup",function(t){t.altKey&&("p"!=t.key&&"P"!=t.key&&"KeyP"!=t.code||e.toggle())})}return t.prototype.tryMoveToFirstChapter=function(){if(this.mode===PresentationMode.Slides&&(""===location.pathname||"/"===location.pathname)){var t=document.querySelector(".sidebar .chapter");if(!t)return console.error("unable to find chapter 1 link for paging. Please manually click into chapter 1");t.firstChild.firstChild.click()}},t.prototype.assignClassesViaComments=function(){for(var t,e=document.createNodeIterator(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,null),n=this.mode===PresentationMode.Web?"not-presenting":"presenting",o=null;t=e.nextNode();)if(8===t.nodeType){var i=t.nodeValue.trim();"web-only"===i?o=this.webClass:"slides-only"===i?o=this.preClass:i.startsWith("notes")?this.processNotes(i):"web-only-end"!==i&&"slides-only-end"!==i&&"notes-end"!==i||(o=null)}else 1===t.nodeType&&null!==o&&t.classList.add(o,n)},t.prototype.getMode=function(){var e=localStorage.getItem(this.queryKey);if(null===e)return PresentationMode.Web;try{var t=parseInt(e);return 1<t||t<0?(console.error("presentation_mode was out of range",t),PresentationMode.Web):t}catch(t){return console.error("presentation_mode present in localStorage but value is not an integer",e,t),PresentationMode.Web}},t.prototype.setMode=function(){localStorage.setItem(this.queryKey,this.mode.toString())},t.prototype.updatePage=function(){this.updateElements(document.querySelectorAll(".presentation-only")),this.updateElements(document.querySelectorAll(".article-content"))},t.prototype.updateElements=function(t){for(var e=0;e<t.length;e++){var n=t[e];this.mode===PresentationMode.Slides?n.classList.replace("not-presenting","presenting"):n.classList.replace("presenting","not-presenting")}},t.prototype.toggle=function(){switch(this.mode){case PresentationMode.Slides:this.mode=PresentationMode.Web;break;case PresentationMode.Web:this.mode=PresentationMode.Slides}this.setMode(),this.updatePage()},t.prototype.processNotes=function(t){var e=t.indexOf("\n");console.log("%c"+t.substr(e+1),"font-size: 14pt;")},t}(),___presentationModeHider=new PresentationModeHider,END_KEY="end-date",MIN_KEY="total-minutes",PresentationTimer=function(){function t(){var e=this;window.addEventListener("keyup",function(t){if(t.altKey)switch(t.key){case"g":return e.start();case"ArrowUp":return e.updateEnd(1);case"ArrowDown":return e.updateEnd(-1);case"m":return e.promptForMinutes();case".":return e.stop()}});var t=this.getEnd();t&&(this.end=new Date(t),this.tick())}return t.prototype.tick=function(){this.timeout=null;var t=new Date;if(t>=this.end)return this.update(0,0);var e=+this.end-+t,n=Math.floor(e/1e3),o=Math.floor(n/60);this.update(o,n-60*o),this.timeout=window.setTimeout(this.tick.bind(this),1e3)},t.prototype.getEnd=function(){var t=localStorage.getItem(END_KEY);this.minutes=+localStorage.getItem(MIN_KEY)||45;var e=new Date;if(e.setHours(e.getHours()+1),t&&!(+t<+e))return t;localStorage.removeItem(END_KEY)},t.prototype.start=function(){var t=new Date,e=t.getMinutes();t.setMinutes(e+this.minutes),this.end=t,this.saveGlobals(),this.tick()},t.prototype.stop=function(){this.timeout&&clearTimeout(this.timeout),localStorage.removeItem(END_KEY);var t=document.getElementById("counter");t&&t.parentElement.removeChild(t)},t.prototype.update=function(t,e){var n=this.getCounterEl();n.innerHTML=this.formatTime(t,e),n.style.borderColor=this.getColor(60*t+e)},t.prototype.formatTime=function(t,e){if(60<=t){var n=Math.floor(t/60);return t-=60*n,n+":"+this.twoDigits(t)+":"+this.twoDigits(e)}return this.twoDigits(t)+":"+this.twoDigits(e)},t.prototype.twoDigits=function(t){return("0"+t).substr(-2)},t.prototype.getCounterEl=function(){var t=document.getElementById("counter");return t||((t=document.createElement("div")).style.position="fixed",t.style.left="calc(100% - 10px)",t.style.top="55px",t.style.width="70px",t.style.textAlign="right",t.style.border="2px solid var(--quote-border)",t.style.color="var(--fg)",t.style.borderRadius="5px",t.style.paddingLeft="5px",t.style.backgroundColor="var(--bg)",t.setAttribute("id","counter"),t.addEventListener("mouseenter",function(t){t.currentTarget.style.left="calc(100% - 70px)",t.currentTarget.style.textAlign="left"}),t.addEventListener("mouseleave",function(t){t.currentTarget.style.left="calc(100% - 10px)",t.currentTarget.style.textAlign="right"}),document.body.appendChild(t),t)},t.prototype.getColor=function(t){var e=t/(60*this.minutes),n=1-e,o=0,i=0;return n<.5?o=i=255*n*2:i=2*e*(o=255),"rgb("+o.toFixed(2)+", "+i.toFixed(2)+", 0)"},t.prototype.updateEnd=function(t){this.timeout&&(clearTimeout(this.timeout),this.timeout=null);var e=this.end.getMinutes();e+=t,this.minutes+=t,this.end.setMinutes(e),this.saveGlobals(),this.tick()},t.prototype.saveGlobals=function(){localStorage.setItem(END_KEY,this.end.toString()),this.saveMinutes()},t.prototype.saveMinutes=function(){localStorage.setItem(MIN_KEY,this.minutes.toString())},t.prototype.promptForMinutes=function(){if(!document.getElementById("minutes-prompt")){var t=document.createElement("div");t.setAttribute("id","minutes-prompt"),t.style.position="absolute",t.style.left="calc(50% - 50px)",t.style.top="calc(50% - 25px)",t.style.display="flex",t.style.flexFlow="column",t.style.justifyContent="space-between",t.style.alignItems="center",t.style.boxShadow="1px 1px 1px 1px var(--quote-border)",t.style.backgroundColor="var(--bg)",t.style.padding="5px";var e=document.createElement("label");e.setAttribute("for","minutes-inputs"),e.appendChild(document.createTextNode("Presentation Length"));var n=document.createElement("input");n.setAttribute("type","number"),n.setAttribute("min","1"),n.setAttribute("name","minutes-input"),n.setAttribute("id","minutes-input"),n.value=(this.minutes||0).toString();var o=document.createElement("button");o.setAttribute("type","button"),o.addEventListener("click",this.promptOk.bind(this)),o.appendChild(document.createTextNode("OK")),t.appendChild(e),t.appendChild(n),t.appendChild(o),document.body.appendChild(t),n.focus()}},t.prototype.promptOk=function(){var t=document.getElementById("minutes-input");if(t){var e=+t.value;this.end?this.updateEnd(e-this.minutes):(this.minutes=e,this.saveMinutes())}t.parentElement.parentElement.removeChild(t.parentElement)},t}(),___presentationTimer=new PresentationTimer;</script>
                     </main>

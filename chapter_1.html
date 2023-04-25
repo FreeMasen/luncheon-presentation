@@ -161,22 +161,22 @@
 </style>
 <h1 id="http-primer"><a class="header" href="#http-primer">HTTP Primer</a></h1>
 <!--web-only-->
-<p>This book will discuss how Luncheon provides helpers for serializing and deserializing HTTP
-Request and Response types. As an introduction, this chapter will provide a brief overview of
-the anatomy of an HTTP request/response.</p>
+<p>This book will discuss how Luncheon provides helpers for serializing and deserializing HTTP Request
+and Response types. As an introduction, this chapter will provide a brief overview of the anatomy of
+an HTTP request/response.</p>
 <p>Both a request and response are encoded as text, the structure of that text starts with the first
 line. For a request, this will be encoded as <code>&lt;method&gt; &lt;path&gt; &lt;version&gt;</code> where <code>method</code> is a string
 (typically <code>GET</code>, <code>POST</code>, <code>PUT</code>, or <code>DELETE</code>), <code>path</code> is a string representing the url path and
-finally <code>version</code> will be <code>HTTP/&lt;version&gt;</code> where the version can be <code>1.0</code> or <code>1.1</code>, the
-latter being the most common (note: HTTP/2 exists but is essentially a break version change).
-For a response, this will be encoded as <code>&lt;version&gt; &lt;status-code&gt; &lt;status-message&gt;</code> where <code>version</code>
-is the same as a a request, <code>status-code</code> is a 3 digit number and the <code>status-message</code> is a string
-associated with the <code>status-code</code>. The new line character for this first line will always be <code>\r\n</code>.</p>
-<p>After the first line, we have a series of header lines, these are expected to be
-<code>&lt;header-name&gt;: &lt;header-value&gt;</code> again followed by <code>\r\n</code>. After the headers an empty line
+finally <code>version</code> will be <code>HTTP/&lt;version&gt;</code> where the version can be <code>1.0</code> or <code>1.1</code>, the latter being
+the most common (note: HTTP/2 exists but is essentially a break version change). For a response,
+this will be encoded as <code>&lt;version&gt; &lt;status-code&gt; &lt;status-message&gt;</code> where <code>version</code> is the same as a
+a request, <code>status-code</code> is a 3 digit number and the <code>status-message</code> is a string associated with
+the <code>status-code</code>. The new line character for this first line will always be <code>\r\n</code>.</p>
+<p>After the first line, we have a series of header lines, these are almost always
+<code>&lt;header-name&gt;: &lt;header-value&gt;</code> followed by <code>\r\n</code>. The headers end when we encounter an empty line
 using the <code>\r\n</code> as its new line character.</p>
-<p>After the headers we move onto the body which is essentially a blob of bytes that can be encoded
-in a few different ways. We aren't going to cover all that here but the most basic request/response
+<p>After the headers we move onto the body which is essentially a blob of bytes that can be encoded in
+a few different ways. We aren't going to cover all that here but the most basic request/response
 body would just be encoded as a string.</p>
 <!--web-only-end-->
 <!--slides-only-->

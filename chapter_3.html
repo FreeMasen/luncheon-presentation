@@ -166,28 +166,103 @@
 the next value in a series. One of the nicest features here is that this pattern looks very similar
 to a lua iterator.</p>
 <!--web-only-end-->
-<p>For more details on LTN12, see the
-<a href="https://lunarmodules.github.io/luasocket/ltn12.html">Lua Socket docs</a></p>
-<pre><code class="language-lua">-- LTN12 Example
-
---- Create a source that will return an ever increasing string of 'a'
---- each call will provide a string 1 letter longer than the previous
-local function create_source()
-    local some_state = 0;
-    return function()
-        some_state = some_state + 1
-        return string.rep(&quot;a&quot;, some_state)
+<p>When constructing with a socket we use the luasocket ltn12 source API to make the construction a
+little more flexible,
+<a href="http://lua-users.org/wiki/FiltersSourcesAndSinks">see the details guide on ltn12</a> for more
+information on this API. For Luncheon, this looks like a function that when called with the same
+arguments expected in a call to the
+<a href="https://lunarmodules.github.io/luasocket/tcp.html#receive">luasocket TCP <code>receive</code></a> method.</p>
+<p>Here is an example of what a test source might look like.</p>
+<pre><code class="language-lua">local function make_request_source()
+  local head_buf = {
+    &quot;GET /a HTTP/1.1&quot;,
+    &quot;Host: 0.0.0.0:80&quot;,
+    &quot;Content-Length: 10&quot;,
+    &quot;&quot;,
+  }
+  local body_buf = {
+    &quot;aaaaaaaaaa&quot;,
+    &quot;&quot;,
+  }
+  local function inner_source(pattern)
+    if #head_buf == 0 and #body_buf == 0 then
+      return nil, &quot;closed&quot;
     end
-end
-
-for chunk in create_source() do
-    print(chunk)
-    if #chunk &gt; 100 then
-        break
+    -- The all pattern
+    if pattern == &quot;*a&quot; then
+      -- concat all the strings remaining together
+      local ret = table.concat(head_buf, &quot;\r\n&quot;) .. table.concat(body_buf, &quot;&quot;)
+      -- set both buffers to empty
+      head_buf = {}
+      body_buf = {}
+      return ret
     end
+    if pattern == &quot;*l&quot; or not pattern then
+      -- first try and return the first line or headers
+      local maybe_ret = table.remove(head_buf, 1)
+      if maybe_ret then
+        return maybe_ret
+      end
+      -- no headers, return the body part
+      return table.remove(body_buf, 1)
+    end
+    -- the pattern was an integer
+    if #head_buf &gt; 0 then
+      return nil, &quot;invalid pattern for headers&quot;
+    end
+    local body = table.remove(body_buf, 1)
+    -- the argument was too large for our remaining payload
+    if not body or #body &gt; pattern then
+      return nil, &quot;slice too large&quot;, body
+    end
+    -- The argument is shorter than our body, trim the remainder
+    if #body &lt; pattern then
+      local rem = string.sub(body, pattern)
+      table.insert(body_buf, 1, rem)
+      return string.sub(1, pattern)
+    end
+    -- the argument was exactly the length of body!
+    return body
+  end
+  return function(pattern)
+    local ret, err = inner_source(pattern)
+    print(string.format(&quot;source(%s) -&gt; %q, %q&quot;, pattern, ret, err))
+    return ret, err
+  end
 end
+local source = make_source_request()
+local chunk
+-- Loop over the head_buf lines
+while chunk ~= &quot;&quot; do
+  chunk = assert(source())
+end
+-- Read by body chunk
+chunk = assert(source())
+</code></pre>
+<p>Breaking this down, we first define a function called <code>make_request_source</code> which will setup a few
+tables that will act as buffers for us. It then defines a function <code>inner_source</code>, that takes one
+argument <code>pattern</code>, which can be either <code>&quot;*a&quot;</code> (read until close), <code>&quot;*l&quot;</code> (read next line) or an
+integer indicating how many bytes to read. When called, it will remove the first element in our
+<code>head_buff</code> table until that table is empty, it will then remove the first element to our
+<code>body_buff</code> table until it is empty. Any calls to this function after both of the buff tables are
+empty will return <code>nil, &quot;closed&quot;</code>. Finally it returns a function that will call <code>inner_source</code>
+capturing the return value and then printing the argument and return values to the terminal.</p>
+<p>We then assign this function to the variable <code>source</code> and loop over the return value until we find
+the empty line to indicate the end of the headers. We then call it one last time to read the body.</p>
+<p>If we were to run the above, we would get something like</p>
+<pre><code class="language-text">source(nil) -&gt; &quot;GET /a HTTP/1.1&quot;, nil
+source(nil) -&gt; &quot;Host: 0.0.0.0:80&quot;, nil
+source(nil) -&gt; &quot;Content-Length: 10&quot;, nil
+source(nil) -&gt; &quot;&quot;, nil
+source(nil) -&gt; &quot;aaaaaaaaaa&quot;, nil
+source(nil) -&gt; &quot;&quot;, nil
+source(10) -&gt; nil, &quot;closed&quot;
 </code></pre>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>Luncheon provides 2 constructors for both <code>Request</code> and <code>Response</code> that will create a source for
+you. These method are <code>tcp_source</code> and <code>udp_source</code>, each of these takes a luasocket (or cosock)
+socket and then wraps them in a <code>source</code> for you. Below are some examples of using the <code>tcp_source</code>
+constructor.</p>
 <pre><code class="language-lua">-- server.lua
 local lunch = require &quot;luncheon&quot;
 local socket = require &quot;socket&quot;
