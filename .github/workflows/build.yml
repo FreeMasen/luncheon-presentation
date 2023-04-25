@@ -31,7 +31,14 @@ jobs:
           curl -L https://github.com/rust-lang/mdBook/releases/download/v0.4.28/mdbook-v0.4.28-x86_64-unknown-linux-musl.tar.gz -o mdbook.tar.gz \
           && tar -xf ./mdbook.tar.gz \
           && rm ./mdbook.tar.gz
-
+      - name: install preprocessor
+        run: echo "todo"
       # Runs a set of commands using the runners shell
       - name: run mdbook build
         run: ./mdbook build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book
