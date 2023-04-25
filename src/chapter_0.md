@@ -1,3 +1,3 @@
 # Luncheon
 
-HTTP Types for Lua
+HTTP Types in pure Lua

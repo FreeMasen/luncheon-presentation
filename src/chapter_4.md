@@ -3,7 +3,7 @@
 $web-only$
 
 The second constructor provided by Luncheon is the Builder. This allows for constructing requests
-or responses in memory to be then serialized.
+or responses in memory to be serialized.
 
 $web-only-end$
 
@@ -61,9 +61,9 @@ $web-only$
 
 In the above examples, the Response is constructed using the builder methods and then use the `iter`
 method to print out each chunk of the request to the terminal. A chunk in this context will be a
-line for the first line and the headers, after that it will depend on how the encoding.
+line for the first line and the headers, after that it will depend on the encoding.
 
-The Request is constructed using the builder methods and then uses the `serialize` method to
-convert it to a string and then passes the whole thing off to `sock:send`.
+The Request is constructed using the builder methods and then uses the `serialize` method to convert
+it to a string and then passes the whole thing off to `sock:send`.
 
 $web-only-end$

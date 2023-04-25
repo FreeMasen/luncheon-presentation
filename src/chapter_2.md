@@ -14,9 +14,8 @@ $web-only$
 
 Luncheon is a lua module designed to parse and generate HTTP Requests and Responses.
 
-It provides a Request, Response and Headers "classes" that can be constructed either by
-consuming data on a socket or by calls to a series of builder methods.
-
-When constructing with a socket we use the luasocket ltn12 source API with helpers for
+It provides a Request, Response and Headers "classes" that can be constructed either by consuming
+data on a socket or by calls to a series of builder methods. The next two chapters will cover how
+these two constructor paths could be used.
 
 $web-only-end$

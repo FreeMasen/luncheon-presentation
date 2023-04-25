@@ -16,12 +16,13 @@ $slides-only-end$
 
 $web-only$
 
-[An upcoming pull request](https://github.com/cosock/luncheon/pull/6) is hopefully merging
-soon that will clean up some parts of this project. The first thing it is trying to achieve
-is to make the API surface of Reqeust and Response consistent. Previously the two types
-provided different method names for `get_content_length`. Another important change here is moving
-the shared code into a single shared module, previous this was manually being copied and pasted
-and resulted in some inconsistencies across the implementations. Finally this adds support for
-chunk encoding for both parsing and generating request with chunk encoding.
+[An upcoming pull request](https://github.com/cosock/luncheon/pull/6) is hopefully merging soon that
+will clean up some parts of this project. The first thing it is trying to achieve is to make the API
+surface of Request and Response consistent. Previously the two types provided different method names
+for `get_content_length`. Another important change here is moving the shared code into a single
+shared module, previous this was manually being copied and pasted and resulted in some
+inconsistencies across the implementations. This also adds support for chunk encoding for both
+parsing and generating request with chunk encoding. Lastly it will provide a method of sending bytes
+w/o accumlating the whole body in memory which is not currently available.
 
 $web-only-end$
