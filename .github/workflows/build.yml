@@ -32,7 +32,12 @@ jobs:
           && tar -xf ./mdbook.tar.gz \
           && rm ./mdbook.tar.gz
       - name: install preprocessor
-        run: echo "todo"
+        run: |
+          curl -L https://github.com/FreeMasen/mdbook-presentation-preprocessor/releases/download/v0.3.1/mdbook-presentation-preprocessor-v0.3.1-x86_64-unknown-linux-gnu.tar.xz -o ./mpp.tar.xz \
+          && tar -xf ./mpp.tar.xz \
+          && rm ./mdbook.tar.gz \
+          && mv ./mdbook-presentation-preprocessor-v0.3.1-x86_64-unknown-linux-gnu/mdbook-presentation-preprocessor . \
+          && rm ./mdbook-presentation-preprocessor-v0.3.1-x86_64-unknown-linux-gnu
       # Runs a set of commands using the runners shell
       - name: run mdbook build
         run: ./mdbook build
